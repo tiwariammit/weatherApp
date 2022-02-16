@@ -9,7 +9,7 @@ import UIKit
 
 class WeatherTVC: UITableViewController{
 
-    private var weatherModel = WeatherDataFetch.get("combineWeather")
+    private var weatherModel = WeatherDataFetch.get("weather")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +42,7 @@ extension WeatherTVC  {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let data = self.weatherModel?[indexPath.row]
+        
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
