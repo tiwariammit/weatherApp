@@ -9,15 +9,16 @@ import Foundation
 
 class CityDataFetch : NSObject{
     
-    class func get(_ fileName: String)-> [CityListModel]?{
+    class func get(_ fileName: String, completion: @escaping (([CityListModel]?) -> Void)){
         
         guard let jsonData = ListDataFetch.get(fileName) else{
             print("Unable to fetch data.")
-            return nil
+            return
         }
-        let weatherModel = try? JSONDecoder().decode([CityListModel].self, from: jsonData)
-        
-        return weatherModel
+        DispatchQueue.global(qos: .background).async{
+            let data = try? JSONDecoder().decode([CityListModel].self, from: jsonData)
+            completion(data)
+        }
     }
 }
 

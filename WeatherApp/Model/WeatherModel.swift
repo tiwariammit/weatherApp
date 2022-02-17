@@ -15,9 +15,9 @@ class WeatherDataFetch : NSObject{
             print("Unable to fetch data.")
             return nil
         }
-        let weatherModel = try? JSONDecoder().decode([WeatherModel].self, from: jsonData)
+        let data = try? JSONDecoder().decode([WeatherModel].self, from: jsonData)
         
-        return weatherModel
+        return data
     }
 }
 

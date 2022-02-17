@@ -9,12 +9,17 @@ import Foundation
 
 struct ViewControllers {
     
-    static let signInHomeVC = "SignInHomeVC"
+    static let weatherTVC = "WeatherTVC"
+    static let citySearchVC = "CitySearchVC"
+
+    
 
 }
 
 
 struct Cells {
     static let weatherTVCell = "WeatherTVCell"
+    static let citySearchTVCell = "CitySearchTVCell"
 
+    
 }
