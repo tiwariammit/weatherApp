@@ -14,3 +14,11 @@ extension String {
         return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
 }
+
+
+//MARK:-Delay
+func delay(delay:Double, closure:@escaping ()->()) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+        closure()
+    }
+}

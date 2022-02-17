@@ -14,10 +14,10 @@ class WeatherTVCell: UITableViewCell {
     @IBOutlet weak var lblDescription: UILabel!
         
 
-    public var weather : WeatherCityModel!{
+    public var weather : WeatherModel!{
         didSet{
-            self.lblCityName.text = weather?.city.name
-            self.lblTemperature.text = "Temp: \(weather?.main.temp ?? 0)"
+            self.lblCityName.text = weather?.name
+            self.lblTemperature.text = "Temp: \(weather?.main.temp ?? 0) °C"
             self.lblDescription.text =  weather?.weather.first?.weatherDescription
         }
     }

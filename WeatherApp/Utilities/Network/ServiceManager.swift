@@ -56,8 +56,9 @@ class ServiceManager: NSObject {
                 failureBlock?(errorMessage)
                 
                 if isShowNoNetBanner{
-                    
-                    viewController.view?.makeToast(errorMessage, position: .bottom, title: nil, image: nil, style: style, completion: nil)
+                    delay(delay: 2) {
+                        viewController.presentErrorDialog(errorMessage)
+                    }
                 }
                 return
             }
@@ -143,7 +144,6 @@ class ServiceManager: NSObject {
                 return
 
             }
-            
         }
         sessionTask.resume()
     }
