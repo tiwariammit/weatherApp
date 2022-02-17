@@ -28,10 +28,12 @@ class WeatherTVCell: UITableViewCell {
 
     }
     
-    public func setValue(_ weather : WeatherModel?){
+    override func prepareForReuse() {
+        super.prepareForReuse()
         
-       
-        
+        self.lblCityName.text = nil
+        self.lblTemperature.text = nil
+        self.lblDescription.text =  nil
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
