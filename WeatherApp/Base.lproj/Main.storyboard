@@ -191,7 +191,7 @@
                                             <action selector="btnBackTouched:" destination="3HX-Pj-5IR" eventType="touchUpInside" id="Sj4-w5-eTh"/>
                                         </connections>
                                     </button>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="sdsds" placeholder="Enter a movie name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4O8-rA-urY" customClass="ATTextField" customModule="WeatherApp" customModuleProvider="target">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter a movie name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4O8-rA-urY" customClass="ATTextField" customModule="WeatherApp" customModuleProvider="target">
                                         <rect key="frame" x="50" y="0.0" width="344" height="44"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>

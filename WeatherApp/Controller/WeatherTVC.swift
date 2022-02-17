@@ -14,11 +14,14 @@ class WeatherTVC: UITableViewController{
     private var weatherModel = WeatherDataFetch.get("weather")
     private var cityListModel : [CityListModel]?
 
-  
+    private var weatherCityModel : [WeatherCityModel]?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        weatherCityModel = weatherModel?.map({ WeatherCityModel(data: $0)}) ?? []
         
+       
     }
 
     
@@ -39,9 +42,50 @@ class WeatherTVC: UITableViewController{
         vc.modalPresentationStyle = .overFullScreen
         
         vc.passedSelectedDataNotifier = { [weak self] data in
-            guard let this = self else { return }
+            guard let `self` = self else { return }
+            
+            let cityId = data.id
+            
+            let url = Urls.urlForWeatherAPI(byCityIDs: cityId.description)
+                        
+            print(url)
+            
+
+            ServiceManager.init(url, withParameter: nil).fetchArrayResponse(viewController: self, loadingOnView: self.view) { [weak self] (data) in
+                guard let `self` = self else { return }
+                
+                let response = try? JSONDecoder().decode(CityDetailModel.self, from: data)
+                
+                guard let model = response.map({ return WeatherCityModel(data: $0)}) else {
+                    return
+                }
+                
+                self.weatherCityModel?.append(model)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+                
+            } errorBlock: { error in
+                
+                print(error)
+            }
+
+            
+//            let cityDetailFetch = CityDetailFetch.get("amrit") { data in
+//
+//
+//                guard let model = data.map({ return WeatherCityModel(data: $0)}) else {
+//                    return
+//                }
+//
+//                self.weatherCityModel?.append(model)
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//                }
+//            }
+            
 //            this.weatherModel?.append(data)
-            this.tableView.reloadData()
+//            this.tableView.reloadData()
             
         }
         
@@ -56,13 +100,13 @@ class WeatherTVC: UITableViewController{
 extension WeatherTVC  {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.weatherModel?.count ?? 0
+        return self.weatherCityModel?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Cells.weatherTVCell, for: indexPath) as! WeatherTVCell
         
-        cell.setValue(self.weatherModel?[indexPath.row])
+        cell.weather = self.weatherCityModel?[indexPath.row]
         return cell
 
     }
@@ -73,7 +117,7 @@ extension WeatherTVC  {
 extension WeatherTVC  {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let data = self.weatherModel?[indexPath.row]
+        let data = self.weatherCityModel?[indexPath.row]
         
     }
     

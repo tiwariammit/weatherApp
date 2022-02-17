@@ -14,6 +14,14 @@ class WeatherTVCell: UITableViewCell {
     @IBOutlet weak var lblDescription: UILabel!
         
 
+    public var weather : WeatherCityModel!{
+        didSet{
+            self.lblCityName.text = weather?.city.name
+            self.lblTemperature.text = "Temp: \(weather?.main.temp ?? 0)"
+            self.lblDescription.text =  weather?.weather.first?.weatherDescription
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -22,9 +30,7 @@ class WeatherTVCell: UITableViewCell {
     
     public func setValue(_ weather : WeatherModel?){
         
-        self.lblCityName.text = weather?.city.name
-        self.lblTemperature.text = "Temp: \(weather?.main.temp ?? 0)"
-        self.lblDescription.text =  weather?.weather.first?.weatherDescription
+       
         
     }
 

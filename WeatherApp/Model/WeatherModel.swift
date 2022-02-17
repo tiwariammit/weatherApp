@@ -29,7 +29,36 @@ struct WeatherModel: Codable {
     let wind: Wind
     let clouds: Clouds
     let weather: [Weather]
+      
 }
+
+//struct WeatherModel: Codable {
+//    var city: City?
+//    var time: Double?
+//    var main: Main?
+//    var wind: Wind?
+//    var clouds: Clouds?
+//    var weather: [Weather]?
+//
+//    var name : String?
+//
+//    private enum CodingKeys: String, CodingKey { case city, time, main, wind, clouds, weather } //this is usually synthesized, but we have to define it ourselves to exclude our additional variable
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//
+//        city = try container.decode(City.self, forKey: .city)
+//
+//        time = try container.decode(Double.self, forKey: .time)
+//        main = try container.decode(Main.self, forKey: .main)
+//
+//        wind = try container.decode(Wind.self, forKey: .wind)
+//        clouds = try container.decode(Clouds.self, forKey: .clouds)
+//        weather = try container.decode([Weather].self, forKey: .weather)
+////        name = try container.decode(String.self, forKey: .name)
+//
+//    }
+//}
 
 // MARK: - City
 struct City: Codable {

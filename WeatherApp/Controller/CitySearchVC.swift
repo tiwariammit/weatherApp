@@ -54,10 +54,10 @@ class CitySearchVC: UIViewController {
                 DispatchQueue.main.async {
                     this.view.isUserInteractionEnabled = true
                     loadingView.remove()
+                    
+                    this.cityListModel = model
+                    this.delegate?.getCityList(model)
                 }
-                
-                this.cityListModel = model
-                this.delegate?.getCityList(model)
             })
         }
         
@@ -68,7 +68,7 @@ class CitySearchVC: UIViewController {
         
         self.searchTextField.placeholder = self.placeholderText
         self.searchTextField.placeHolderColor = .blue
-        self.searchTextField.textColor = .red
+//        self.searchTextField.textColor = .red
         self.searchTextField.addTarget(self, action: #selector(self.textFieldDidChanged(_:)), for: .editingChanged)
         self.searchTextField.clearButtonColor = .white
         self.tableView.tableFooterView = UIView()
@@ -200,6 +200,7 @@ extension  CitySearchVC : UITableViewDataSource, UITableViewDelegate{
         let cityDetail = self.searchCityList[indexPath.row]
         
         self.passedSelectedDataNotifier?(cityDetail)
+        self.dismissController()
         
     }
 }

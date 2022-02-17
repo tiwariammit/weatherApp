@@ -23,7 +23,7 @@ class CityDataFetch : NSObject{
 }
 
 // MARK: - CityListModel
-struct CityListModel: Codable {
+struct CityListModel: Decodable {
     let id: Int
     let name, state, country: String
     let coord: Coord

@@ -24,7 +24,7 @@ class ServiceManager: NSObject {
     
     var request : URLRequest!
     
-    public init(_ url : String, withParameter parameter : [String: AnyObject]?, headers: [String: String] = [String:String](), method: HttpMethod = .post, isKillAllSession: Bool = false){
+    public init(_ url : String, withParameter parameter : [String: AnyObject]?, headers: [String: String] = [String:String](), method: HttpMethod = .get, isKillAllSession: Bool = false){
         
         self.request = URLRequest(url: URL(string:url)!)
         
@@ -80,7 +80,6 @@ class ServiceManager: NSObject {
         let sessionTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             DispatchQueue.main.async {
-                
             
                 if isShowProgressHud{
                     DispatchQueue.main.async {
@@ -88,7 +87,6 @@ class ServiceManager: NSObject {
                         loadingView.remove()
                     }
                 }
-                
                 
                 if let err = error {
                     print("Failed to fetch courses:", err)
@@ -124,24 +122,25 @@ class ServiceManager: NSObject {
                 let httpResponse = response as! HTTPURLResponse
                 let statusCode = httpResponse.statusCode
                 
-                if statusCode != StatusCode.success || statusCode != StatusCode.signUpSuccess{
+                if statusCode == StatusCode.success || statusCode == StatusCode.signUpSuccess{
                     
-                    if isShowAlertBanner {
-                        do{
-                            let response = try JSONDecoder().decode(ErrorResponse.self, from: data)
-                            viewController.presentErrorDialog(response.message)
-                            failureBlock?(response.message)
-                            return
-
-                        }catch{
-                            print(error)
-                        }
-                    }
-                    errorBlock(data)
+                    completion(data)
                     return
                 }
                 
-                completion(data)
+                if isShowAlertBanner {
+                    do{
+                        let response = try JSONDecoder().decode(ErrorResponse.self, from: data)
+                        viewController.presentErrorDialog(response.message)
+                        failureBlock?(response.message)
+                        return
+
+                    }catch{
+                        print(error)
+                    }
+                }
+                errorBlock(data)
+                return
 
             }
             

@@ -18,8 +18,16 @@
 					<key>UISceneStoryboardFile</key>
 					<string>Main</string>
 				</dict>
+                
 			</array>
-		</dict>
+	
 	</dict>
+    </dict>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <!--Include to allow all connections (DANGER)-->
+      <key>NSAllowsArbitraryLoads</key>
+          <true/>
+    </dict>
 </dict>
 </plist>
