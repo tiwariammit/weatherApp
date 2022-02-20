@@ -20,9 +20,24 @@ struct StatusCode {
     static let signUpSuccess : Int = 201 // success on sign up
 }
 
+protocol ServiceProtocol {
+    func getSuccessData( _ successData : Data, withResponseTag tag : Int)
+    func getErrorData(_ errorData : Data)
+    func getFailureBlock (_ failureMessage : String)
+
+}
+
+extension ServiceProtocol{
+    func getErrorData(_ errorData : Data) {}
+    func getFailureBlock (_ failureMessage : String){}
+    func getSuccessData( _ successData : Data, withResponseTag tag : Int){}
+}
+
 class ServiceManager: NSObject {
     
     var request : URLRequest!
+    
+    public var serviceProtocol : ServiceProtocol?
     
     public init(_ url : String, withParameter parameter : [String: AnyObject]?, headers: [String: String] = [String:String](), method: HttpMethod = .get, isKillAllSession: Bool = false){
         
@@ -40,7 +55,7 @@ class ServiceManager: NSObject {
     }
     
     
-    func fetchArrayResponse(viewController: UIViewController, loadingOnView view: UIView, withLoadingColor actColor : UIColor = UIColor(red: 0.941, green: 0.941, blue: 0.941, alpha: 1.00), isShowProgressHud: Bool = true,isShowNoNetBanner: Bool = true, isShowAlertBanner: Bool = true, completion: @escaping (Data) -> (), errorBlock : @escaping ((Data) -> Void),failureBlock: ((String)->Void)? = nil) {
+    func fetchArrayResponse(viewController: UIViewController, loadingOnView view: UIView, withLoadingColor actColor : UIColor = UIColor(red: 0.941, green: 0.941, blue: 0.941, alpha: 1.00), isShowProgressHud: Bool = true,isShowNoNetBanner: Bool = true, isShowAlertBanner: Bool = true, successTag tag : Int){
         
         var style = ToastManager.shared.style
         style.backgroundColor = .toastError
@@ -53,7 +68,7 @@ class ServiceManager: NSObject {
             guard let result = googleTest?.isReachable, result else {
                 
                 let errorMessage = Errors.Apis.noInternet
-                failureBlock?(errorMessage)
+                self.serviceProtocol?.getFailureBlock(errorMessage)
                 
                 if isShowNoNetBanner{
                     delay(delay: 2) {
@@ -95,7 +110,7 @@ class ServiceManager: NSObject {
                     if isShowAlertBanner {
                         viewController.presentErrorDialog(err.localizedDescription)
                     }
-                    failureBlock?(err.localizedDescription)
+                    self.serviceProtocol?.getFailureBlock(err.localizedDescription)
                     return
                 }
                 
@@ -105,7 +120,9 @@ class ServiceManager: NSObject {
                     if isShowAlertBanner {
                         viewController.presentErrorDialog(errorMessage)
                     }
-                    failureBlock?(errorMessage)
+                    
+                    self.serviceProtocol?.getFailureBlock(errorMessage)
+
                     return
                 }
                 
@@ -125,7 +142,7 @@ class ServiceManager: NSObject {
                 
                 if statusCode == StatusCode.success || statusCode == StatusCode.signUpSuccess{
                     
-                    completion(data)
+                    self.serviceProtocol?.getSuccessData(data, withResponseTag: tag)
                     return
                 }
                 
@@ -133,14 +150,14 @@ class ServiceManager: NSObject {
                     do{
                         let response = try JSONDecoder().decode(ErrorResponse.self, from: data)
                         viewController.presentErrorDialog(response.message)
-                        failureBlock?(response.message)
+                        self.serviceProtocol?.getFailureBlock(response.message)
                         return
 
                     }catch{
                         print(error)
                     }
                 }
-                errorBlock(data)
+                self.serviceProtocol?.getErrorData(data)
                 return
 
             }

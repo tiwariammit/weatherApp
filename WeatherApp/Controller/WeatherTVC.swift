@@ -18,7 +18,7 @@ class WeatherTVC: UITableViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-  
+        
         // after 80 second every time weather is refresh
         Timer.scheduledTimer(timeInterval: 80, target: self, selector: #selector(self.refreshWeather), userInfo: nil, repeats: true)
         
@@ -47,17 +47,10 @@ class WeatherTVC: UITableViewController{
         
         let url = Urls.urlForWeatherAPI(byCityIDGroup: cities)
         print(url)
-        ServiceManager.init(url, withParameter: nil).fetchArrayResponse(viewController: self, loadingOnView: self.view) { [weak self] response in
-            guard let `self` = self else { return }
-            
-            let responseModel = try? JSONDecoder().decode(WeatherResponse.self, from: response)
-            self.weatherModel = responseModel
-            
-            self.tableView.reload(.roll, animationType: .curveEaseInOut, withTableViewHidden: true, andAnimationTime: 2, usingSpringWithDamping: 0.9)
-            
-        } errorBlock: { error in
-            
-        }
+        let sM = ServiceManager.init(url, withParameter: nil)
+        sM.fetchArrayResponse(viewController: self, loadingOnView: self.view, successTag: 0)
+        sM.serviceProtocol = self
+        
     }
     
     // after 80 second every time weather is refresh
@@ -69,7 +62,7 @@ class WeatherTVC: UITableViewController{
     @IBAction func btnAddCityTouched(_ sender: UIButton) {
         
         self.btnAddCity.semanticContentAttribute = .forceRightToLeft
-
+        
         guard let cityListModel = self.cityListModel else {
             self.presentErrorDialog("Fetching the city data please wait for a while.")
             return
@@ -99,21 +92,9 @@ class WeatherTVC: UITableViewController{
             
             print(url)
             // get weather data for selected cities
-            ServiceManager.init(url, withParameter: nil).fetchArrayResponse(viewController: self, loadingOnView: self.view) { [weak self] (data) in
-                guard let `self` = self else { return }
-                
-                let response = try? JSONDecoder().decode(WeatherResponse.self, from: data)
-                let list = response?.list ?? []
-                
-                self.weatherModel?.list.append(contentsOf: list)
-                DispatchQueue.main.async {
-                    self.tableView.reload()
-                }
-                
-            } errorBlock: { error in
-                
-                print(error)
-            }
+            let service = ServiceManager.init(url, withParameter: nil)
+            service.fetchArrayResponse(viewController: self, loadingOnView: self.view, successTag: 1)
+            service.serviceProtocol = self
         }
         
         self.present(vc, animated: false, completion: nil)
@@ -161,3 +142,21 @@ extension WeatherTVC  {
     }
 }
 
+
+extension WeatherTVC: ServiceProtocol{
+    
+    func getSuccessData(_ successData: Data, withResponseTag tag : Int) {
+        
+        let responseModel = try? JSONDecoder().decode(WeatherResponse.self, from: successData)
+        
+        if tag == 1{
+            let list = responseModel?.list ?? []
+            
+            self.weatherModel?.list.append(contentsOf: list)
+        }else{
+            self.weatherModel = responseModel
+        }
+        
+        self.tableView.reload(.roll, animationType: .curveEaseInOut, withTableViewHidden: true, andAnimationTime: 2, usingSpringWithDamping: 0.9)
+    }
+}
